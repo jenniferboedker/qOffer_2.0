@@ -107,11 +107,6 @@ class ProjectMainConnector implements CreateProjectDataSource, CreateProjectSpac
 
     ProjectIdentifier projectIdentifier = new ProjectIdentifier(space, projectCode)
 
-    //collect infos needed for database
-    String projectTitle = projectApplication.getProjectTitle()
-    Customer customer = projectApplication.getCustomer()
-    ProjectManager projectManager = projectApplication.getProjectManager()
-    
     //if the space does not exist, an error shall be thrown
     if (!openbisClient.spaceExists(space.toString())) {
       throw new DatabaseQueryException("Could not create project because of non-existent space: "+space.toString())
@@ -128,8 +123,6 @@ class ProjectMainConnector implements CreateProjectDataSource, CreateProjectSpac
     }
 
     return projectDbConnector.addProjectAndConnectPersonsInUserDB(projectIdentifier, projectApplication)
-
-    return new Project(projectIdentifier, projectTitle, projectApplication.getLinkedOffer())
   }
   
 }
