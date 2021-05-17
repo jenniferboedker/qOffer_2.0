@@ -709,7 +709,15 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
             "    WHERE person_affiliation.person_id = ?"
     log.info(query)
     log.info"connect"
-    Connection connection = connectionProvider.connect()
+    Connection connection
+    try {
+      log.info("try")
+      connection = connectionProvider.connect()
+    } catch (Exception e) {
+      log.info("error")
+      log.error(e)
+      e.printStackTrace()
+    }
     log.info("connection.withCloseable")
     connection.withCloseable {
       log.info("prepare statement")

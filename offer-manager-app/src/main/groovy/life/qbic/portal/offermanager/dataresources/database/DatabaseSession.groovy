@@ -50,6 +50,9 @@ class DatabaseSession implements ConnectionProvider {
             String url = "jdbc:mysql://${host}:${port}/${sqlDatabase}"
 
             BasicDataSource basicDataSource = new BasicDataSource()
+           
+            basicDataSource.setTestOnBorrow(true)
+            basicDataSource.setValidationQueryTimout(5)
             basicDataSource.setUrl(url)
             basicDataSource.setUsername(user)
             basicDataSource.setPassword(password)
@@ -69,7 +72,17 @@ class DatabaseSession implements ConnectionProvider {
      * @throws SQLException if a database access error occurs or the url is {@code null}
      */
     Connection connect() throws SQLException {
+      log.info("connect called")
+      log.info("dataSource:")
+      log.info(dataSource)
+      try {
         return dataSource.getConnection()
+      } catch (Exception e) {
+        log.error("timeout")
+        log.error(e)
+        e.printStackTrace()
+        return null
+      }      
     }
 
     /**

@@ -223,7 +223,7 @@ class OfferOverviewView extends FormLayout {
         }
     }
 
-    private class LoadOfferInfoThread extends Thread {
+    private class LoadOfferInfoThread {// extends Thread {
 
         final private OfferOverview offerOverview
 
@@ -234,13 +234,17 @@ class OfferOverviewView extends FormLayout {
             this.ui = ui
             this.offerOverview = offerOverview
         }
+        
+        void start() {
+          run()
+        }
 
-        @Override
+//        @Override
         void run() {
 
             Optional<OfferOverview> selectedOffer = Optional.empty()
             log.info("ui access")
-            ui.access(() -> {
+//            ui.access(() -> {
               log.info("make spinner visible in thread")
                 downloadSpinner.setVisible(true)
                 log.info("overviewGrid.setEnabled(false)")
@@ -252,13 +256,13 @@ class OfferOverviewView extends FormLayout {
                 downloadBtn.setEnabled(false)
                 updateOfferBtn.setEnabled(false)
                 createProjectButton.setEnabled(false)
-            })
+//            })
             log.info("fetch offer")
                 offerOverviewController.fetchOffer(offerOverview.offerId)
                 log.info("create download resource")
                 createResourceForDownload()
                 log.info("ui access 2")
-                ui.access(() -> {
+//                ui.access(() -> {
                   log.info("deactivate spinner")
                     downloadSpinner.setVisible(false)
                     overviewGrid.setSelectionMode(Grid.SelectionMode.SINGLE)
@@ -277,8 +281,8 @@ class OfferOverviewView extends FormLayout {
                     log.info("check creation allowed")
                     checkProjectCreationAllowed(offerOverview)
                     log.info("stop polling")
-                    ui.setPollInterval(-1)
-                })
+//                    ui.setPollInterval(-1)
+//                })
         }
     }
 
