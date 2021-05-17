@@ -184,11 +184,15 @@ class OfferOverviewView extends FormLayout {
     }
 
     private void setupGridListeners() {
+      log.info("debug setup grid listeners")
         overviewGrid.addSelectionListener(
                 { selection ->
                     selection.firstSelectedItem.ifPresent({overview ->
+                      log.info("set polling interval")
                         UI.getCurrent().setPollInterval(50)
+                        log.info("make spinner visible")
                         downloadSpinner.setVisible(true)
+                        log.info("create new thread object")
                         new LoadOfferInfoThread(UI.getCurrent(), overview).start()
                     })
                 })
@@ -226,6 +230,7 @@ class OfferOverviewView extends FormLayout {
         final private UI ui
 
         LoadOfferInfoThread(UI ui, OfferOverview offerOverview) {
+          log.info("thread constructor")
             this.ui = ui
             this.offerOverview = offerOverview
         }
@@ -234,31 +239,44 @@ class OfferOverviewView extends FormLayout {
         void run() {
 
             Optional<OfferOverview> selectedOffer = Optional.empty()
+            log.info("ui access")
             ui.access(() -> {
+              log.info("make spinner visible in thread")
                 downloadSpinner.setVisible(true)
+                log.info("overviewGrid.setEnabled(false)")
                 overviewGrid.setEnabled(false)
+                log.info("get selected")
                 selectedOffer = overviewGrid.getSelectionModel().getFirstSelectedItem()
                 overviewGrid.setSelectionMode(Grid.SelectionMode.NONE)
+                log.info("disable other buttons")
                 downloadBtn.setEnabled(false)
                 updateOfferBtn.setEnabled(false)
                 createProjectButton.setEnabled(false)
             })
+            log.info("fetch offer")
                 offerOverviewController.fetchOffer(offerOverview.offerId)
+                log.info("create download resource")
                 createResourceForDownload()
-
+                log.info("ui access 2")
                 ui.access(() -> {
+                  log.info("deactivate spinner")
                     downloadSpinner.setVisible(false)
                     overviewGrid.setSelectionMode(Grid.SelectionMode.SINGLE)
                     // After we have set the single mode to NONE, the listeners seem to be gone
                     // So we set them again
                     // IMPORTANT: the selection must be set before we attach the listener,
                     // otherwise the selection listener gets triggered (LOOP!)
+                    log.info("select")
                     overviewGrid.select(selectedOffer.get())
+                    log.info("setup listeners")
                     setupGridListeners()
+                    log.info("activate buttons")
                     overviewGrid.setEnabled(true)
                     downloadBtn.setEnabled(true)
                     updateOfferBtn.setEnabled(true)
+                    log.info("check creation allowed")
                     checkProjectCreationAllowed(offerOverview)
+                    log.info("stop polling")
                     ui.setPollInterval(-1)
                 })
         }

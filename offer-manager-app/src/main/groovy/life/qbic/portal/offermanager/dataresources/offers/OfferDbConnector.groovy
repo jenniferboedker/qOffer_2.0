@@ -241,6 +241,7 @@ class OfferDbConnector implements CreateOfferDataSource, FetchOfferDataSource, P
 
     @Override
     Optional<Offer> getOffer(OfferId offerId) {
+      log.info("get offer from db")
         Optional<Offer> offer = Optional.empty()
 
         String query = "SELECT * " +
@@ -253,6 +254,7 @@ class OfferDbConnector implements CreateOfferDataSource, FetchOfferDataSource, P
             statement.setString(1, offerId.toString())
             ResultSet resultSet = statement.executeQuery()
             while (resultSet.next()) {
+              log.info("resultset not empty")
                 /*
                 Load the offer Id first
                  */
@@ -263,8 +265,12 @@ class OfferDbConnector implements CreateOfferDataSource, FetchOfferDataSource, P
                  */
                 int customerId =  resultSet.getInt("customerId")
                 int projectManagerId = resultSet.getInt("projectManagerId")
+                log.info("get customer")
+                log.info(customerId)
                 Customer customer = customerGateway.getCustomer(customerId)
+                log.info("get manager")
                 ProjectManager projectManager = customerGateway.getProjectManager(projectManagerId)
+                log.info("success")
                 /*
                 Load general offer info
                  */
@@ -278,11 +284,12 @@ class OfferDbConnector implements CreateOfferDataSource, FetchOfferDataSource, P
                 Date expirationDate = resultSet.getDate("expirationDate")
                 int selectedAffiliationId = resultSet.getInt("customerAffiliationId")
                 Affiliation selectedAffiliation = customerGateway.getAffiliation(selectedAffiliationId)
-                List<ProductItem> items = productGateway.getItemsForOffer(offerPrimaryId)
+               log.info("items for offer")
+                 List<ProductItem> items = productGateway.getItemsForOffer(offerPrimaryId)
                 String checksum = resultSet.getString("checksum")
                 String associatedProject = resultSet.getString("associatedProject")
                 String experimentalDesign = resultSet.getString("experimentalDesign")
-
+log.info("builder")
                 def offerBuilder = new Offer.Builder(
                         customer,
                         projectManager,
@@ -298,16 +305,23 @@ class OfferDbConnector implements CreateOfferDataSource, FetchOfferDataSource, P
                         .overheads(overheads)
                         .netPrice(net)
                         .checksum(checksum)
+                        log.info("projectid")
                 Optional<ProjectIdentifier> projectIdentifier = parseProjectIdentifier(associatedProject)
+                        log.info("projectid check")
                 if (projectIdentifier.isPresent()) {
                     offerBuilder.associatedProject(projectIdentifier.get())
                 }
+                log.info("exp design check")
                 if(experimentalDesign){
                     offerBuilder.experimentalDesign(experimentalDesign)
                 }
+                log.info("building")
                 offer = Optional.of(offerBuilder.build())
+                log.info(offer)
             }
         }
+        log.info("return")
+        log.info(offer)
         return offer
     }
 

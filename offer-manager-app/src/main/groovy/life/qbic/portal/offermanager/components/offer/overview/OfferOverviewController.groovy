@@ -27,6 +27,8 @@ class OfferOverviewController {
      * @param offerId The OfferId of the Offer to be retrieved
      */
     void fetchOffer(OfferId offerId){
+      log.info("-fetchoffer before")
         this.input.fetchOffer(offerId)
+        log.info("-fetchoffer after")
     }
 }

@@ -29,11 +29,15 @@ class FetchOffer implements FetchOfferInput {
 
     @Override
     void fetchOffer(OfferId offerId) {
+      log.info("in fetchoffer")
         try {
+          log.info("try")
             Optional<Offer> foundOffer = dataSource.getOffer(offerId)
             if (!foundOffer.isPresent()) {
+              log.info("not found")
                 output.failNotification("Could not find an Offer for the given OfferId ${offerId.toString()}")
             } else {
+              log.info("found")
                 Offer finalOffer = generateOfferFromSource(foundOffer.get())
                 log.info("Successfully retrieved Offer with Id ${offerId.toString()} ")
                 output.fetchedOffer(finalOffer)

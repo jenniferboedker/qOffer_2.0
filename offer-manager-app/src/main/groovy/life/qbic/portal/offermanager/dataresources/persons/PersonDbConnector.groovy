@@ -674,8 +674,11 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
     String firstName = resultSet.getString('first_name')
     String lastName = resultSet.getString('last_name')
     String email = resultSet.getString('email')
+    log.info("creating builder")
     Customer.Builder customerBuilder = new Customer.Builder(firstName, lastName, email).title(title)
+    log.info("getting affiliations")
     List<Affiliation> affiliations = getAffiliationForPersonId(personId)
+    log.info("done")
     return customerBuilder.affiliations(affiliations).build()
   }
 
@@ -704,12 +707,19 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
             "    LEFT JOIN affiliation\n" +
             "    ON  person_affiliation.affiliation_id = affiliation.id\n" +
             "    WHERE person_affiliation.person_id = ?"
+    log.info(query)
+    log.info"connect"
     Connection connection = connectionProvider.connect()
+    log.info("connection.withCloseable")
     connection.withCloseable {
+      log.info("prepare statement")
       def preparedStatement = it.prepareStatement(query)
+      log.info("setInt")
       preparedStatement.setInt(1, personId)
+      log.info("execute")
       ResultSet resultSet = preparedStatement.executeQuery()
       while (resultSet.next()) {
+        log.info("resultset for affiliation exists")
         GroovyRowResult result = SqlExtensions.toRowResult(resultSet)
         String organization = result.get('organization')
         String addressAddition = result.get('address_addition')
@@ -726,6 +736,8 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
         affiliations.add(affiliation)
       }
     }
+    log.info("affiliations")
+    log.info(affiliations)
     return affiliations
   }
 
@@ -766,7 +778,10 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
   }
 
   Customer getCustomer(int personPrimaryId) {
+log.info("get customer")
+log.info(personPrimaryId)
     String query = PERSON_SELECT_QUERY + " " +"WHERE id=?"
+    log.info(query)
     Connection connection = connectionProvider.connect()
 
     connection.withCloseable {
@@ -775,6 +790,7 @@ class PersonDbConnector implements CreatePersonDataSource, SearchPersonDataSourc
       ResultSet result = statement.executeQuery()
       Customer person = null
       while (result.next()) {
+        log.info("found")
         person = parseCustomerFromResultSet(result)
       }
       return person
