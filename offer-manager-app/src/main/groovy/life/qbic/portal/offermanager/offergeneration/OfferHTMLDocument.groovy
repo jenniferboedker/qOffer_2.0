@@ -10,8 +10,7 @@ import life.qbic.datamodel.dtos.business.*
  * generates the HTML code for each part of the offer.</p>
  *
  * <p>This class obtains the single html snippets from e.g the QuotationDetails class. Its only task is to manage the page content.
- * It iteratively adds items to a page and inserts a page break if an item would no longer fit onto a page. The element size of an item or an header,..
- * is calculated for that.</p>
+ * It iteratively adds items to a page and inserts a page break if an item would no longer fit onto a page. The element size of an item or an header is calculated dependent on its content.</p>
  *
  * @since 1.1.0
  *
@@ -25,7 +24,6 @@ class OfferHTMLDocument {
         quotationOverview = new QuotationOverview(templateHTML, offer)
         quotationDetails = new QuotationDetails(templateHTML, offer)
 
-        //fillTemplateWithOfferContent()
     }
 
     /**
