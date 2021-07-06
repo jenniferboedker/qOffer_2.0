@@ -21,7 +21,7 @@
 
 		<groovy.version>3.0.8</groovy.version>
 
-		<vaadin.version>8.13.0</vaadin.version>
+		<vaadin.version>20.0.4</vaadin.version>
 		<vaadin.plugin.version>8.13.0</vaadin.plugin.version>
 	</properties>
 	<pluginRepositories>
