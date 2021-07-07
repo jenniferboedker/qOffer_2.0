@@ -246,7 +246,7 @@
 					<plugin>
 						<groupId>org.eclipse.jetty</groupId>
 						<artifactId>jetty-maven-plugin</artifactId>
-						<version>9.4.32.v20200930</version>
+						<version>11.0.6</version>
 						<configuration>
 							<!-- Jetty's hot deploy enabled has been enabled by default! If you 
 								want to disable jetty's hot deploy feature, activate the 'jetty-cold-deploy' 
